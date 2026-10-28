@@ -1,79 +1,71 @@
 /*jshint esversion: 8 */
 const connectToDatabase = require("../models/db");
-/*jshint esversion: 8 */
-const express = require('express');
-/*jshint esversion: 8 */
+const express = require("express");
 const router = express.Router();
 
-/*jshint esversion: 8 */
-router.get('/', async (req, res) => {
-    try {
-        // Task 1: Connect to MongoDB and store connection to db constant
-        /*jshint esversion: 8 */
-        const db = await connectToDatabase();
+router.get("/", async (req, res) => {
+  try {
+    // Task 1: Connect to MongoDB and store connection to db constant
 
-        // Task 2: use the collection() method to retrieve the gift collection
-        /*jshint esversion: 8 */
-        const collection = db.collection("gifts");
+    const db = await connectToDatabase();
 
-        // Task 3: Fetch all gifts using the collection.find method. Chain with toArray method to convert to JSON array
-        /*jshint esversion: 8 */
-        const gifts = await collection.find({}).toArray();
+    // Task 2: use the collection() method to retrieve the gift collection
 
-        // Task 4: return the gifts using the res.json method
-        res.json(gifts);
-    } catch (e) {
-        console.error('Error fetching gifts:', e);
-        res.status(500).send('Error fetching gifts');
-    }
+    const collection = db.collection("gifts");
+
+    // Task 3: Fetch all gifts using the collection.find method. Chain with toArray method to convert to JSON array
+
+    const gifts = await collection.find({}).toArray();
+
+    // Task 4: return the gifts using the res.json method
+    res.json(gifts);
+  } catch (e) {
+    console.error("Error fetching gifts:", e);
+    res.status(500).send("Error fetching gifts");
+  }
 });
 
-/*jshint esversion: 8 */
-router.get('/:id', async (req, res) => {
-    try {
-        // Task 1: Connect to MongoDB and store connection to db constant
-        /*jshint esversion: 8 */
-        const db = await connectToDatabase();
+router.get("/:id", async (req, res) => {
+  try {
+    // Task 1: Connect to MongoDB and store connection to db constant
 
-        // Task 2: use the collection() method to retrieve the gift collection
-        /*jshint esversion: 8 */
-        const collection = db.collection("gifts");
+    const db = await connectToDatabase();
 
-        /*jshint esversion: 8 */
-        const id = req.params.id;
+    // Task 2: use the collection() method to retrieve the gift collection
 
-        // Task 3: Find a specific gift by ID using the collection.fineOne method and store in constant called gift
-        /*jshint esversion: 8 */
-        const gift = await collection.findOne({ id: id });
+    const collection = db.collection("gifts");
 
-        if (!gift) {
-            return res.status(404).send('Gift not found');
-        }
+    const id = req.params.id;
 
-        res.json(gift);
-    } catch (e) {
-        console.error('Error fetching gift:', e);
-        res.status(500).send('Error fetching gift');
+    // Task 3: Find a specific gift by ID using the collection.fineOne method and store in constant called gift
+
+    const gift = await collection.findOne({ id: id });
+
+    if (!gift) {
+      return res.status(404).send("Gift not found");
     }
+
+    res.json(gift);
+  } catch (e) {
+    console.error("Error fetching gift:", e);
+    res.status(500).send("Error fetching gift");
+  }
 });
-
-
 
 // Add a new gift
-/*jshint esversion: 8 */
-router.post('/', async (req, res, next) => {
-    try {
-        /*jshint esversion: 8 */
-        const db = await connectToDatabase();
-        /*jshint esversion: 8 */
-        const collection = db.collection("gifts");
-        /*jshint esversion: 8 */
-        const gift = await collection.insertOne(req.body);
 
-        res.status(201).json(gift.ops[0]);
-    } catch (e) {
-        next(e);
-    }
+router.post("/", async (req, res, next) => {
+  try {
+    const db = await connectToDatabase();
+
+    const collection = db.collection("gifts");
+
+    const gift = await collection.insertOne(req.body);
+
+    res.status(201).json(gift.ops[0]);
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;
